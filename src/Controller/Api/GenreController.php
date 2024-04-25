@@ -2,8 +2,8 @@
 
 namespace App\Controller\Api;
 
-use App\Entity\Movie;
-use App\Repository\MovieRepository;
+use App\Entity\Genre;
+use App\Repository\GenreRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
@@ -13,11 +13,10 @@ use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-class MovieController extends AbstractController
+class GenreController extends AbstractController
 {
-
     public function __construct(
-        private MovieRepository $movieRepository,
+        private GenreRepository $genreRepository,
         private EntityManagerInterface $em,
         private SerializerInterface $serializer
     ) {
@@ -25,70 +24,70 @@ class MovieController extends AbstractController
     }
 
 
-    #[Route('/api/movies', name: 'app_api_movie', methods: ['GET'])]
+    #[Route('/api/genres', name: 'app_api_genre', methods: ['GET'])]
     public function index(): JsonResponse
     {
-        $movies = $this->movieRepository->findAll();
+        $genres = $this->genreRepository->findAll();
 
         return $this->json([
-            'movies' => $movies,
+            'genres' => $genres,
         ], 200, [], [
             'groups' => ['read']
         ]);
     }
 
-    #[Route('/api/movie/{id}', name: 'app_api_movie_get',  methods: ['GET'])]
-    public function get(?Movie $movie = null): JsonResponse
+    #[Route('/api/genre/{id}', name: 'app_api_genre_get',  methods: ['GET'])]
+    public function get(?Genre $genre = null): JsonResponse
     {
-        if (!$movie) {
+        if (!$genre) {
             return $this->json([
                 'error' => 'Ressource does not exist',
             ], 404);
         }
 
-        return $this->json($movie, 200, [], [
+        return $this->json($genre, 200, [], [
             'groups' => ['read']
         ]);
     }
 
-    #[Route('/api/movies', name: 'app_api_movie_add',  methods: ['POST'])]
+    #[Route('/api/genres', name: 'app_api_genre_add',  methods: ['POST'])]
     public function add(
-        #[MapRequestPayload('json', ['groups' => 'create'])] Movie $movie
+        #[MapRequestPayload('json', ['groups' => 'create'])] Genre $genre
     ): JsonResponse {
-        $this->em->persist($movie);
+        $this->em->persist($genre);
         $this->em->flush();
 
-        return $this->json($movie, 200, [], [
+        return $this->json($genre, 200, [], [
             'groups' => ['read']
         ]);
     }
 
 
-    #[Route('/api/movie/{id}', name: 'app_api_movie_update',  methods: ['PUT'])]
-    public function update(Movie $movie, Request $request): JsonResponse
+    #[Route('/api/genre/{id}', name: 'app_api_genre_update',  methods: ['PUT'])]
+    public function update(Genre $genre, Request $request): JsonResponse
     {
 
         $data = $request->getContent();
-        $this->serializer->deserialize($data, Movie::class, 'json', [
-            AbstractNormalizer::OBJECT_TO_POPULATE => $movie,
+        $this->serializer->deserialize($data, Genre::class, 'json', [
+            AbstractNormalizer::OBJECT_TO_POPULATE => $genre,
             'groups' => ['update']
         ]);
 
         $this->em->flush();
 
-        return $this->json($movie, 200, [], [
+        return $this->json($genre, 200, [], [
             'groups' => ['read'],
         ]);
     }
 
-    #[Route('/api/movie/{id}', name: 'app_api_movie_delete',  methods: ['DELETE'])]
-    public function delete(Movie $movie): JsonResponse
+    #[Route('/api/genre/{id}', name: 'app_api_genre_delete',  methods: ['DELETE'])]
+    public function delete(Genre $genre): JsonResponse
     {
-        $this->em->remove($movie);
+        $this->em->remove($genre);
         $this->em->flush();
 
         return $this->json([
-            'message' => 'Movie deleted successfully'
+            'message' => 'Genre deleted successfully'
         ], 200);
     }
 }

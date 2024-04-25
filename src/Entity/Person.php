@@ -2,10 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\PersonRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\PersonRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: PersonRepository::class)]
 class Person
@@ -13,27 +14,32 @@ class Person
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['read'])]
     private ?int $id = null;
 
-    #[ORM\Column(length: 100)]
+    #[ORM\Column(length: 100, nullable: true)]
+    #[Groups(['read', 'create', 'update'])]
     private ?string $fullname = null;
 
     /**
      * @var Collection<int, Movie>
      */
     #[ORM\ManyToMany(targetEntity: Movie::class, mappedBy: 'actors')]
+    #[Groups(['read', 'create', 'update'])]
     private Collection $playedMovies;
 
     /**
      * @var Collection<int, Movie>
      */
     #[ORM\ManyToMany(targetEntity: Movie::class, mappedBy: 'directors')]
+    #[Groups(['read', 'create', 'update'])]
     private Collection $directedMovies;
 
     /**
      * @var Collection<int, Movie>
      */
     #[ORM\ManyToMany(targetEntity: Movie::class, mappedBy: 'producers')]
+    #[Groups(['read', 'create', 'update'])]
     private Collection $producedMovies;
 
     public function __construct()

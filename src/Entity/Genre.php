@@ -17,7 +17,7 @@ class Genre
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
-    #[Groups(['read'])]
+    #[Groups(['read', 'create', 'update'])]
     private ?string $name = null;
 
     /**
