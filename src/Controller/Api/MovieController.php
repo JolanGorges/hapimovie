@@ -7,6 +7,7 @@ use OpenApi\Attributes as OA;
 use App\Repository\MovieRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -37,12 +38,22 @@ class MovieController extends AbstractController
             items: new OA\Items(ref: new Model(type: Movie::class, groups: ['read']))
         )
     )]
-    public function index(): JsonResponse
-    {
-        $movies = $this->movieRepository->findAll();
+
+    public function index(
+        PaginatorInterface $paginator,
+        Request $request
+    ): JsonResponse {
+
+        $movie = $this->movieRepository->getAllMoviesQuery();
+
+        $data = $paginator->paginate(
+            $movie,
+            $request->query->get('page', 1),
+            2
+        );
 
         return $this->json([
-            'movies' => $movies,
+            'data' => $data,
         ], 200, [], [
             'groups' => ['read']
         ]);
