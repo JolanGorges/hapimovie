@@ -13,6 +13,9 @@ use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
+use OpenApi\Attributes as OA;
+
+#[OA\Tag(name: "Movie")]
 class MovieController extends AbstractController
 {
 
@@ -53,7 +56,7 @@ class MovieController extends AbstractController
 
     #[Route('/api/movies', name: 'app_api_movie_add',  methods: ['POST'])]
     public function add(
-        #[MapRequestPayload('json', ['groups' => 'create'])] Movie $movie
+        #[MapRequestPayload('json', ['groups' => ['create']])] Movie $movie
     ): JsonResponse {
         $this->em->persist($movie);
         $this->em->flush();

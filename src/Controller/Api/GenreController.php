@@ -12,7 +12,9 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use OpenApi\Attributes as OA;
 
+#[OA\Tag(name: "Genre")]
 class GenreController extends AbstractController
 {
     public function __construct(
@@ -52,7 +54,7 @@ class GenreController extends AbstractController
 
     #[Route('/api/genres', name: 'app_api_genre_add',  methods: ['POST'])]
     public function add(
-        #[MapRequestPayload('json', ['groups' => 'create'])] Genre $genre
+        #[MapRequestPayload('json', ['groups' =>  ['create']])] Genre $genre
     ): JsonResponse {
         $this->em->persist($genre);
         $this->em->flush();

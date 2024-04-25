@@ -12,7 +12,9 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use OpenApi\Attributes as OA;
 
+#[OA\Tag(name: "Person")]
 class PersonController extends AbstractController
 {
 
@@ -52,7 +54,7 @@ class PersonController extends AbstractController
 
     #[Route('/api/persons', name: 'app_api_person_add',  methods: ['POST'])]
     public function add(
-        #[MapRequestPayload('json', ['groups' => 'create'])] Person $person
+        #[MapRequestPayload('json', ['groups' =>  ['create']])] Person $person
     ): JsonResponse {
         $this->em->persist($person);
         $this->em->flush();
